@@ -119,6 +119,7 @@ const Header = props => {
               </div>
             </form>
 
+            {/* Hidden Mega Menu - Commented Out
             <Dropdown
               className="dropdown-mega d-none d-lg-block ms-2"
               isOpen={megaMenu}
@@ -268,6 +269,7 @@ const Header = props => {
                 </Row>
               </DropdownMenu>
             </Dropdown>
+            */}
           </div>
           <div className="d-flex">
             <div className="dropdown d-inline-block d-lg-none ms-2">
@@ -387,6 +389,7 @@ const Header = props => {
             <NotificationDropdown />
             <ProfileMenu />
             
+            {/* Hidden Settings Button - Commented Out
             <div
                onClick={() => {
                 props.showRightSidebarAction(!props.showRightSidebar);
@@ -400,6 +403,7 @@ const Header = props => {
                 <i className="bx bx-cog bx-spin" />
               </button>
             </div>
+            */}
           </div>
         </div>
       </header>

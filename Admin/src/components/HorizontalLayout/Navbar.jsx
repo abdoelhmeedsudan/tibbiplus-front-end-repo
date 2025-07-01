@@ -106,6 +106,17 @@ const Navbar = (props) => {
               id="topnav-menu-content"
             >
               <ul className="navbar-nav">
+                <li className="nav-item">
+                  <Link
+                    className="nav-link"
+                    to="/dashboard"
+                  >
+                    <i className="bx bx-home-circle me-2"></i>
+                    {props.t("Dashboard")}
+                  </Link>
+                </li>
+
+                {/* Hidden Menu Items - Commented Out
                 <li className="nav-item dropdown">
                   <Link
                     className="nav-link  arrow-none"
@@ -210,9 +221,6 @@ const Navbar = (props) => {
                           <Link to="/ui-placeholders" className="dropdown-item">
                             {props.t("Placeholders")}
                           </Link>
-                          {/* <Link to="/ui-sweet-alert" className="dropdown-item">
-                              {props.t("Sweet-Alert")}
-                            </Link> */}
                           <Link
                             to="/ui-tabs-accordions"
                             className="dropdown-item"
@@ -487,7 +495,9 @@ const Navbar = (props) => {
                         <Link to="/tasks-list" className="dropdown-item">
                           {props.t("Task List")}
                         </Link>
-                        <Link to="/tasks-kanban" className="dropdown-item">{props.t("Tasks Kanban")}</Link>
+                        <Link to="/tasks-kanban" className="dropdown-item">
+                          {props.t("Tasks Kanban")}
+                        </Link>
                         <Link to="/tasks-create" className="dropdown-item">
                           {props.t("Create Task")}
                         </Link>
@@ -518,97 +528,6 @@ const Navbar = (props) => {
                         <Link to="/contacts-profile" className="dropdown-item">
                           {props.t("Profile")}
                         </Link>
-                      </div>
-                    </div>
-                    <div className="dropdown">
-                      <Link
-                        to="/#"
-                        className="dropdown-item  arrow-none"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setBlog(!blog);
-                        }}
-                      >
-                        {props.t("Blog")} <div className="arrow-down" />
-                      </Link>
-                      <div
-                        className={classname("dropdown-menu", {
-                          show: blog,
-                        })}
-                      >
-                        <Link to="/blog-list" className="dropdown-item">
-                          {props.t("Blog List")}
-                        </Link>
-                        <Link to="/blog-grid" className="dropdown-item">
-                          {props.t("Blog Grid")}
-                        </Link>
-                        <Link to="/blog-details" className="dropdown-item">
-                          {props.t("Blog Details")}
-                        </Link>
-                      </div>
-                    </div>
-
-                    <div className="dropdown">
-                      <Link
-                        to="/#"
-                        className="dropdown-item arrow-none"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setJob(!job);
-                        }}
-                      >
-                        {props.t("Jobs")} <div className="arrow-down"></div>
-                      </Link>
-                      <div
-                        className={classname("dropdown-menu", { show: job })}
-                      >
-                        <Link to="/job-list" className="dropdown-item">
-                          {props.t("Job List")}
-                        </Link>
-                        <Link to="/job-grid" className="dropdown-item">
-                          {props.t("Job Grid")}
-                        </Link>
-                        <Link to="/job-apply" className="dropdown-item">
-                          {props.t("Job Apply")}
-                        </Link>
-                        <Link to="/job-details" className="dropdown-item">
-                          {props.t("Job Details")}
-                        </Link>
-                        <Link to="/job-categories" className="dropdown-item">
-                          {props.t("Job Catogories")}
-                        </Link>
-
-                        <div className="dropdown">
-                          <Link
-                            className="dropdown-item dropdown-toggle arrow-none"
-                            to="/#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCandidate(!candidate);
-                            }}
-                          >
-                            <span key="t-candidate">Candidate</span>{" "}
-                            <div className="arrow-down"></div>
-                          </Link>
-                          <div
-                            className={classname("dropdown-menu", {
-                              show: candidate,
-                            })}
-                          >
-                            <Link
-                              to="/candidate-list"
-                              className="dropdown-item"
-                            >
-                              {props.t("List")}
-                            </Link>
-                            <Link
-                              to="/candidate-overview"
-                              className="dropdown-item"
-                            >
-                              {props.t("Overview")}
-                            </Link>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -692,12 +611,6 @@ const Navbar = (props) => {
                         <Link to="/tables-datatable" className="dropdown-item">
                           {props.t("Data Tables")}
                         </Link>
-                        {/* <Link to="/tables-responsive" className="dropdown-item">
-                          {props.t("Responsive Table")}
-                        </Link> */}
-                        {/* <Link to="/tables-dragndrop" className="dropdown-item">
-                          {props.t("Drag & Drop Table")}
-                        </Link> */}
                       </div>
                     </div>
                     <div className="dropdown">
@@ -949,6 +862,7 @@ const Navbar = (props) => {
                     </div>
                   </div>
                 </li>
+                */}
               </ul>
             </Collapse>
           </nav>
