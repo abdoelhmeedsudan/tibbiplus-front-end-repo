@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Routes, Route } from "react-router-dom";
 import { connect } from "react-redux";
@@ -53,6 +54,18 @@ const App = (props) => {
   const {
     layoutType
   } = useSelector(LayoutProperties);
+
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (i18n.language === "ar") {
+      document.documentElement.dir = "rtl";
+      document.body.style.direction = "rtl";
+    } else {
+      document.documentElement.dir = "ltr";
+      document.body.style.direction = "ltr";
+    }
+  }, [i18n.language]);
 
   function getLayout(layoutType) {
     let layoutCls = VerticalLayout;
