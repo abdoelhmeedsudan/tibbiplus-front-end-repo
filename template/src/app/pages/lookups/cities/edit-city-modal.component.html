@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ 'Edit City' | translate }}</h4>
+  <button type="button" class="btn-close" (click)="onCancel()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="cityForm" (ngSubmit)="onSubmit()">
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger mb-3">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Name in Arabic -->
+    <div class="mb-3">
+      <label for="nameAr" class="form-label">{{ 'Name in Arabic' | translate }} *</label>
+      <input 
+        type="text" 
+        id="nameAr"
+        formControlName="nameAr"
+        class="form-control" 
+        [class.is-invalid]="cityForm.get('nameAr')?.invalid && cityForm.get('nameAr')?.touched"
+        [placeholder]="'Enter Arabic name' | translate">
+      <div *ngIf="cityForm.get('nameAr')?.invalid && cityForm.get('nameAr')?.touched" class="invalid-feedback">
+        {{ getErrorMessage('nameAr') }}
+      </div>
+    </div>
+
+    <!-- Name in English -->
+    <div class="mb-3">
+      <label for="nameEn" class="form-label">{{ 'Name in English' | translate }} *</label>
+      <input 
+        type="text" 
+        id="nameEn"
+        formControlName="nameEn"
+        class="form-control" 
+        [class.is-invalid]="cityForm.get('nameEn')?.invalid && cityForm.get('nameEn')?.touched"
+        [placeholder]="'Enter English name' | translate">
+      <div *ngIf="cityForm.get('nameEn')?.invalid && cityForm.get('nameEn')?.touched" class="invalid-feedback">
+        {{ getErrorMessage('nameEn') }}
+      </div>
+    </div>
+
+    <!-- Country -->
+    <div class="mb-3">
+      <label for="countryId" class="form-label">{{ 'Country' | translate }} *</label>
+      <select 
+        id="countryId"
+        formControlName="countryId"
+        class="form-control"
+        [class.is-invalid]="cityForm.get('countryId')?.invalid && cityForm.get('countryId')?.touched">
+        <option value="">{{ 'Select Country' | translate }}</option>
+        <option *ngFor="let country of countries" [value]="country.id">
+          {{ country.nameEn }}
+        </option>
+      </select>
+      <div *ngIf="cityForm.get('countryId')?.invalid && cityForm.get('countryId')?.touched" class="invalid-feedback">
+        {{ getErrorMessage('countryId') }}
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    {{ 'Cancel' | translate }}
+  </button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="cityForm.invalid">
+    {{ 'Update' | translate }}
+  </button>
+</div> 

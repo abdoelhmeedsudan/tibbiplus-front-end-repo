@@ -1,0 +1,70 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">{{ 'Countries' | translate }}</h4>
+            <button class="btn btn-primary" (click)="addNew()">
+              <i class="feather icon-plus"></i>
+              {{ 'Add New' | translate }}
+            </button>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            <i class="feather icon-alert-circle me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="clearError()"></button>
+          </div>
+
+          <!-- Loading -->
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-2">{{ 'Loading countries...' | translate }}</p>
+          </div>
+          
+          <!-- Table -->
+          <div *ngIf="!loading" class="table-responsive">
+            <table class="table table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>{{ 'Name in Arabic' | translate }}</th>
+                  <th>{{ 'Name in English' | translate }}</th>
+                  <th>{{ 'Code' | translate }}</th>
+                  <th>{{ 'Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let country of countries; let i = index">
+                  <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                  <td>{{ country.nameAr }}</td>
+                  <td>{{ country.nameEn }}</td>
+                  <td><span class="badge bg-info">{{ country.code }}</span></td>
+                  <td>
+                    <button class="btn btn-warning me-1" (click)="editCountry(country)">
+                     <i class="far fa-edit"></i>
+                    </button>
+                    <button  class="btn btn-danger"  (click)="deleteCountry(country)">
+                      <i class="fa fa-remove"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="countries.length === 0">
+                  <td colspan="5" class="text-center py-4">
+                    <i class="feather icon-inbox" style="font-size: 3rem;"></i>
+                    <p class="mt-2">{{ 'No data available' | translate }}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

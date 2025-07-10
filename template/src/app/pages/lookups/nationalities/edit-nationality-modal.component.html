@@ -1,0 +1,52 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ 'Edit Nationality' | translate }}</h4>
+  <button type="button" class="btn-close" (click)="onCancel()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="nationalityForm" (ngSubmit)="onSubmit()">
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger mb-3">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Name in Arabic -->
+    <div class="mb-3">
+      <label for="nameAr" class="form-label">{{ 'Name in Arabic' | translate }} *</label>
+      <input 
+        type="text" 
+        id="nameAr"
+        formControlName="nameAr"
+        class="form-control" 
+        [class.is-invalid]="nationalityForm.get('nameAr')?.invalid && nationalityForm.get('nameAr')?.touched"
+        [placeholder]="'Enter Arabic name' | translate">
+      <div *ngIf="nationalityForm.get('nameAr')?.invalid && nationalityForm.get('nameAr')?.touched" class="invalid-feedback">
+        {{ getErrorMessage('nameAr') }}
+      </div>
+    </div>
+
+    <!-- Name in English -->
+    <div class="mb-3">
+      <label for="nameEn" class="form-label">{{ 'Name in English' | translate }} *</label>
+      <input 
+        type="text" 
+        id="nameEn"
+        formControlName="nameEn"
+        class="form-control" 
+        [class.is-invalid]="nationalityForm.get('nameEn')?.invalid && nationalityForm.get('nameEn')?.touched"
+        [placeholder]="'Enter English name' | translate">
+      <div *ngIf="nationalityForm.get('nameEn')?.invalid && nationalityForm.get('nameEn')?.touched" class="invalid-feedback">
+        {{ getErrorMessage('nameEn') }}
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    {{ 'Cancel' | translate }}
+  </button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="nationalityForm.invalid">
+    {{ 'Update' | translate }}
+  </button>
+</div> 
