@@ -315,5 +315,13 @@
     "Search by name...": "Search by name...",
     "Clear": "Clear",
     "Loading cities...": "Loading cities...",
-    "Loading nationalities...": "Loading nationalities..."
+    "Loading nationalities...": "Loading nationalities...",
+    "Add New Specialization": "Add New Specialization",
+    "Edit Specialization": "Edit Specialization",
+    "Loading specializations...": "Loading specializations...",
+    "Select Job Title": "Select Job Title",
+    "Add New Sub Specialization": "Add New Sub Specialization",
+    "Edit Sub Specialization": "Edit Sub Specialization",
+    "Loading sub specializations...": "Loading sub specializations...",
+    "Select Specialization": "Select Specialization"
 }

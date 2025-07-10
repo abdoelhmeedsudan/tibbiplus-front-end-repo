@@ -1,0 +1,87 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ 'Edit Sub Specialization' | translate }}</h4>
+  <button type="button" class="btn-close" (click)="onCancel()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="subSpecializationForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <!-- Name in Arabic -->
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="nameAr" class="form-label">{{ 'Name in Arabic' | translate }} *</label>
+          <input 
+            type="text" 
+            id="nameAr"
+            formControlName="nameAr"
+            class="form-control" 
+            [class.is-invalid]="subSpecializationForm.get('nameAr')?.invalid && subSpecializationForm.get('nameAr')?.touched"
+            [placeholder]="'Enter Arabic name' | translate">
+          <div *ngIf="subSpecializationForm.get('nameAr')?.invalid && subSpecializationForm.get('nameAr')?.touched" class="invalid-feedback">
+            {{ getErrorMessage('nameAr') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Name in English -->
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="nameEn" class="form-label">{{ 'Name in English' | translate }} *</label>
+          <input 
+            type="text" 
+            id="nameEn"
+            formControlName="nameEn"
+            class="form-control" 
+            [class.is-invalid]="subSpecializationForm.get('nameEn')?.invalid && subSpecializationForm.get('nameEn')?.touched"
+            [placeholder]="'Enter English name' | translate">
+          <div *ngIf="subSpecializationForm.get('nameEn')?.invalid && subSpecializationForm.get('nameEn')?.touched" class="invalid-feedback">
+            {{ getErrorMessage('nameEn') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Specialization -->
+      <div class="col-12">
+        <div class="form-group mb-3">
+          <label for="specializationId" class="form-label">{{ 'Specialization' | translate }} *</label>
+          <select 
+            id="specializationId"
+            formControlName="specializationId"
+            class="form-select" 
+            [class.is-invalid]="subSpecializationForm.get('specializationId')?.invalid && subSpecializationForm.get('specializationId')?.touched">
+            <option value="">{{ 'Select Specialization' | translate }}</option>
+            <option *ngFor="let specialization of specializations" [value]="specialization.id">
+              {{ specialization.nameAr }} / {{ specialization.nameEn }}
+            </option>
+          </select>
+          <div *ngIf="subSpecializationForm.get('specializationId')?.invalid && subSpecializationForm.get('specializationId')?.touched" class="invalid-feedback">
+            {{ getErrorMessage('specializationId') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+      <i class="feather icon-alert-circle me-2"></i>
+      {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    <i class="feather icon-x"></i>
+    {{ 'Cancel' | translate }}
+  </button>
+  <button 
+    type="button" 
+    class="btn btn-primary" 
+    (click)="onSubmit()"
+    [disabled]="subSpecializationForm.invalid || loading">
+    <i class="feather icon-save" *ngIf="!loading"></i>
+    <div class="spinner-border spinner-border-sm me-2" *ngIf="loading"></div>
+    {{ 'Update' | translate }}
+  </button>
+</div> 

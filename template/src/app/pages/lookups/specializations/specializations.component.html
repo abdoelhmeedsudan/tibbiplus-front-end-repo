@@ -1,1 +1,97 @@
-<p>specializations works!</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">{{ 'Specializations' | translate }}</h4>
+            <button class="btn btn-primary" (click)="addNew()">
+              <i class="feather icon-plus"></i>
+              {{ 'Add New' | translate }}
+            </button>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <!-- Search Form -->
+          <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="mb-4">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="searchTerm">{{ 'Search' | translate }}</label>
+                  <input 
+                    type="text" 
+                    id="searchTerm"
+                    formControlName="searchTerm"
+                    class="form-control" 
+                    [placeholder]="'Search by name...' | translate">
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-end">
+                <button type="submit" class="btn btn-info me-2">
+                  <i class="feather icon-search"></i>
+                  {{ 'Search' | translate }}
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="searchForm.reset(); onSearch()">
+                  <i class="feather icon-refresh-cw"></i>
+                  {{ 'Clear' | translate }}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            <i class="feather icon-alert-circle me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="clearError()"></button>
+          </div>
+
+          <!-- Loading -->
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-2">{{ 'Loading specializations...' | translate }}</p>
+          </div>
+          
+          <!-- Table -->
+          <div *ngIf="!loading" class="table-responsive">
+            <table class="table table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>{{ 'Name in Arabic' | translate }}</th>
+                  <th>{{ 'Name in English' | translate }}</th>
+                  <th>{{ 'Job Title' | translate }}</th>
+                  <th>{{ 'Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let specialization of specializations; let i = index">
+                  <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                  <td>{{ specialization.nameAr }}</td>
+                  <td>{{ specialization.nameEn }}</td>
+                  <td>{{ specialization.jobTitleNameAr }} / {{ specialization.jobTitleNameEn }}</td>
+                  <td>
+                    <button class="btn btn-warning me-1" (click)="editSpecialization(specialization)">
+                     <i class="far fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger" (click)="deleteSpecialization(specialization)">
+                      <i class="fa fa-remove"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="specializations.length === 0">
+                  <td colspan="5" class="text-center py-4">
+                    <i class="feather icon-inbox" style="font-size: 3rem;"></i>
+                    <p class="mt-2">{{ 'No data available' | translate }}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

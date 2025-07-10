@@ -315,5 +315,13 @@
     "Search by name...": "البحث بالاسم...",
     "Clear": "مسح",
     "Loading cities...": "جاري تحميل المدن...",
-    "Loading nationalities...": "جاري تحميل الجنسيات..."
+    "Loading nationalities...": "جاري تحميل الجنسيات...",
+    "Add New Specialization": "إضافة تخصص جديد",
+    "Edit Specialization": "تعديل التخصص",
+    "Loading specializations...": "جاري تحميل التخصصات...",
+    "Select Job Title": "اختر المسمى الوظيفي",
+    "Add New Sub Specialization": "إضافة تخصص فرعي جديد",
+    "Edit Sub Specialization": "تعديل التخصص الفرعي",
+    "Loading sub specializations...": "جاري تحميل التخصصات الفرعية...",
+    "Select Specialization": "اختر التخصص"
 }
