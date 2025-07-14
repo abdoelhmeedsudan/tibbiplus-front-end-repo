@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import {SpecializationsService} from '../../../shared/services/specializations.service'
 
 // Mock interface for Specialization - you'll need to create a proper service for this
 interface Specialization {
@@ -26,7 +27,8 @@ export class AddSubSpecializationModalComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private SpecializationsService :SpecializationsService
   ) {}
 
   ngOnInit(): void {
@@ -42,15 +44,21 @@ export class AddSubSpecializationModalComponent implements OnInit {
     });
   }
 
-  loadSpecializations(): void {
-    // Mock data - replace with actual service call
-    this.specializations = [
-      { id: '550e8400-e29b-41d4-a716-446655440101', nameAr: 'طب عام', nameEn: 'General Medicine' },
-      { id: '550e8400-e29b-41d4-a716-446655440102', nameAr: 'جراحة', nameEn: 'Surgery' },
-      { id: '550e8400-e29b-41d4-a716-446655440103', nameAr: 'أمراض القلب', nameEn: 'Cardiology' },
-      { id: '550e8400-e29b-41d4-a716-446655440104', nameAr: 'طب الأطفال', nameEn: 'Pediatrics' }
-    ];
-  }
+loadSpecializations(): void {
+  this.SpecializationsService.getAllSpecializations().subscribe({
+    next: (response: any) => {
+      if (response.succeeded || response.success) {
+        this.specializations = response.data || response;
+      } else {
+        console.error('Failed to load specializations:', response.message);
+      }
+    },
+    error: (error) => {
+      console.error('Error loading specializations:', error);
+    }
+  });
+}
+
 
   onSubmit(): void {
     if (this.subSpecializationForm.valid) {

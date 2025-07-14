@@ -11,7 +11,7 @@ import { EditSubSpecializationModalComponent } from './edit-sub-specialization-m
   selector: 'app-sub-specializations',
   templateUrl: './sub-specializations.component.html',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ReactiveFormsModule, AddSubSpecializationModalComponent, EditSubSpecializationModalComponent]
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule]
 })
 export class SubSpecializationsComponent implements OnInit {
   subSpecializations: SubSpecialization[] = [];

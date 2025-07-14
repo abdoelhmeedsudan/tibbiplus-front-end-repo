@@ -46,7 +46,7 @@ export class JobTitlesService {
 
   constructor(private apiHelper: ApiHelperService) {
     // Set base URL for the API
-    this.apiHelper.setBaseUrl('http://localhost:5050/api');
+    this.apiHelper.setBaseUrl('http://localhost:5180/api');
     
     // Add authentication token if available
     const token = localStorage.getItem('auth_token');
@@ -66,7 +66,7 @@ export class JobTitlesService {
    * Get all job titles without pagination (for dropdowns, etc.)
    */
   getAllJobTitles(): Observable<ApiResponse<JobTitle[]>> {
-    return this.apiHelper.getList<JobTitle>(this.endpoint);
+    return this.apiHelper.getList<JobTitle>(this.endpoint+"/all");
   }
 
   /**
