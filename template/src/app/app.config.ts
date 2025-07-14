@@ -3,7 +3,8 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { routes } from './app.routes';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DecimalPipe } from '@angular/common';
 import { provideToastr } from 'ngx-toastr';
@@ -19,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     DecimalPipe,
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withInMemoryScrolling({
       scrollPositionRestoration: "top",

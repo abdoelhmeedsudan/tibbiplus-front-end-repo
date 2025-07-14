@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const content: Routes = [
     {
+        path: '',
+        redirectTo: 'dashboard/default',
+        pathMatch: 'full'
+    },
+    {
         path: 'dashboard',
         loadChildren: () => import('../../components/dashboards/dashboard.routes').then(r => r.dashboard),
         data: {

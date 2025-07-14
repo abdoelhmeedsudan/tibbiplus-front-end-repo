@@ -44,7 +44,6 @@ export const menuItems: Menu[] = [
     children: [
       { path: '/lookups/countries', title: 'Countries', type: 'link' },
       { path: '/lookups/cities', title: 'Cities', type: 'link' },
-      { path: '/lookups/job-titles', title: 'Job Titles', type: 'link' },
       { path: '/lookups/nationalities', title: 'Nationalities', type: 'link' },
       { path: '/lookups/specializations', title: 'Specializations', type: 'link' },
       { path: '/lookups/sub-specializations', title: 'Sub Specializations', type: 'link' },
