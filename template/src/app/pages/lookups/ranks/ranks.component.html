@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-header">
           <div class="d-flex justify-content-between align-items-center">
-            <h4 class="card-title mb-0">{{ 'Job Titles' | translate }}</h4>
+            <h4 class="card-title mb-0">{{ 'Ranks' | translate }}</h4>
             <button class="btn btn-primary" (click)="addNew()">
               <i class="feather icon-plus"></i>
               {{ 'Add New' | translate }}
@@ -50,7 +50,7 @@
           <!-- Loading -->
           <div *ngIf="loading" class="text-center py-4">
             <div class="spinner-border text-primary"></div>
-            <p class="mt-2">{{ 'Loading job titles...' | translate }}</p>
+            <p class="mt-2">{{ 'Loading ranks...' | translate }}</p>
           </div>
           
           <!-- Table -->
@@ -61,25 +61,27 @@
                   <th>#</th>
                   <th>{{ 'Name in Arabic' | translate }}</th>
                   <th>{{ 'Name in English' | translate }}</th>
+                  <th>{{ 'Job Title' | translate }}</th>
                   <th>{{ 'Actions' | translate }}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let jobTitle of jobTitles; let i = index">
+                <tr *ngFor="let rank of ranks; let i = index">
                   <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-                  <td>{{ jobTitle.nameAr }}</td>
-                  <td>{{ jobTitle.nameEn }}</td>
+                  <td>{{ rank.nameAr }}</td>
+                  <td>{{ rank.nameEn }}</td>
+                  <td>{{ rank.jobTitleNameAr || rank.jobTitleNameEn }}</td>
                   <td>
-                    <button class="btn btn-warning me-1" (click)="editJobTitle(jobTitle)">
+                    <button class="btn btn-warning me-1" (click)="editRank(rank)">
                      <i class="far fa-edit"></i>
                     </button>
-                    <button class="btn btn-danger" (click)="deleteJobTitle(jobTitle)">
+                    <button class="btn btn-danger" (click)="deleteRank(rank)">
                       <i class="fa fa-remove"></i>
                     </button>
                   </td>
                 </tr>
-                <tr *ngIf="jobTitles.length === 0">
-                  <td colspan="4" class="text-center py-4">
+                <tr *ngIf="ranks.length === 0">
+                  <td colspan="5" class="text-center py-4">
                     <i class="feather icon-inbox" style="font-size: 3rem;"></i>
                     <p class="mt-2">{{ 'No data available' | translate }}</p>
                   </td>
@@ -92,4 +94,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> 

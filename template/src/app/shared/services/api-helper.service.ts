@@ -21,7 +21,7 @@ export interface ApiError {
 })
 export class ApiHelperService {
 
-  private baseUrl: string = 'http://localhost:5180//api/'; // يمكن تغييرها حسب الحاجة
+  private baseUrl: string = 'http://localhost:5270/api/'; // يمكن تغييرها حسب الحاجة
   private defaultHeaders: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
     'Accept': 'application/json'

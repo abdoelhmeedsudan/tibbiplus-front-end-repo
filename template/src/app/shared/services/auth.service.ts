@@ -14,14 +14,30 @@ export interface User {
   fullName: string;
 }
 
+export interface LoginRequest {
+  userName: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  httpStatusCode: number;
+  succeeded: boolean;
+  message: string;
+  errors: any;
+  modelErrors: any;
+  data: {
+    token: string;
+    expiresDate: string;
+    userName: string;
+    roles: string[];
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly IDENTITY_SERVER_URL = 'https://localhost:5001';
-  private readonly CLIENT_ID = 'tibbiplus.cv.angular';
-  private readonly REDIRECT_URI = 'http://localhost:4200/signin-callback';
-  
+  private readonly API_BASE_URL = 'http://localhost:5270/api';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -32,137 +48,44 @@ export class AuthService {
     this.loadCurrentUser();
   }
 
-  // بدء عملية تسجيل الدخول - إرسال المستخدمة إلى IdentityServer
-  async login(): Promise<void> {
-    const state = this.generateRandomString();
-    const codeVerifier = this.generateRandomString();
-    
-    // حفظ state و codeVerifier للتحقق لاحقاً
-    localStorage.setItem('auth_state', state);
-    localStorage.setItem('code_verifier', codeVerifier);
-    
-    // إنشاء code challenge
-    const codeChallenge = await this.generateCodeChallenge(codeVerifier);
-    
-    // بناء URL تسجيل الدخول
-    const loginUrl = `${this.IDENTITY_SERVER_URL}/connect/authorize?` +
-      `client_id=${this.CLIENT_ID}&` +
-      `redirect_uri=${encodeURIComponent(this.REDIRECT_URI)}&` +
-      `response_type=code&` +
-      `scope=${encodeURIComponent('openid profile id role fullName userType tibbiplus.cv.external tibbiplus.cv.internal')}&` +
-      `state=${state}&` +
-      `code_challenge=${codeChallenge}&` +
-      `code_challenge_method=S256`;
-    
-    // إرسال المستخدمة إلى IdentityServer
-    window.location.href = loginUrl;
-  }
-
-  // معالجة callback من IdentityServer
-  handleSigninCallback(): Observable<boolean> {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const state = urlParams.get('state');
-    const error = urlParams.get('error');
-    
-    // التحقق من وجود خطأ
-    if (error) {
-      console.error('Authentication error:', error);
-      return throwError(() => new Error(error));
-    }
-    
-    // التحقق من وجود code
-    if (!code) {
-      return throwError(() => new Error('No authorization code received'));
-    }
-    
-    // التحقق من state
-    const savedState = localStorage.getItem('auth_state');
-    if (state !== savedState) {
-      return throwError(() => new Error('Invalid state parameter'));
-    }
-    
-    // استبدال code بـ token
-    return this.exchangeCodeForToken(code);
-  }
-
-  // استبدال authorization code بـ access token
-  private exchangeCodeForToken(code: string): Observable<boolean> {
-    const codeVerifier = localStorage.getItem('code_verifier');
-    
-    const body = new URLSearchParams();
-    body.set('client_id', this.CLIENT_ID);
-    body.set('grant_type', 'authorization_code');
-    body.set('code', code);
-    body.set('redirect_uri', this.REDIRECT_URI);
-    body.set('code_verifier', codeVerifier || '');
-    
-    return this.http.post(`${this.IDENTITY_SERVER_URL}/connect/token`, body.toString(), {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    }).pipe(
-      tap((response: any) => {
-        // حفظ الـ tokens
-        this.setToken(response.access_token);
-        this.setRefreshToken(response.refresh_token);
-        
-        // جلب معلومات المستخدم
-        this.loadUserInfo(response.access_token);
-        
-        // مسح البيانات المؤقتة
-        localStorage.removeItem('auth_state');
-        localStorage.removeItem('code_verifier');
+  // تسجيل الدخول المباشر
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_BASE_URL}/Auth/Login`, credentials).pipe(
+      tap((response) => {
+        if (response.succeeded && response.data) {
+          this.setToken(response.data.token);
+          
+          // إنشاء كائن المستخدم من البيانات المستلمة
+          const user: User = {
+            id: response.data.userName, // استخدام userName كـ ID مؤقت
+            username: response.data.userName,
+            email: '', // لا يوجد email في الاستجابة
+            firstName: response.data.userName,
+            lastName: '',
+            roles: response.data.roles,
+            fullName: response.data.userName
+          };
+          
+          this.setCurrentUser(user);
+        }
       }),
-      map(() => true),
       catchError(error => {
-        console.error('Token exchange error:', error);
-        return throwError(() => error);
+        console.error('Login error:', error);
+        
+        // معالجة استجابة Bad Request
+        if (error.status === 400 && error.error) {
+          const errorResponse = error.error as LoginResponse;
+          return throwError(() => new Error(errorResponse.message || 'Invalid credentials'));
+        }
+        
+        // معالجة أخطاء أخرى
+        return throwError(() => new Error('حدث خطأ في الاتصال بالخادم'));
       })
     );
   }
 
-  // جلب معلومات المستخدم من IdentityServer
-  private loadUserInfo(token: string): void {
-    this.http.get(`${this.IDENTITY_SERVER_URL}/connect/userinfo`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).subscribe({
-      next: (userInfo: any) => {
-        const user: User = {
-          id: userInfo.sub,
-          username: userInfo.preferred_username || userInfo.name,
-          email: userInfo.email,
-          firstName: userInfo.given_name || '',
-          lastName: userInfo.family_name || '',
-          roles: userInfo.role ? [userInfo.role] : [],
-          fullName: userInfo.name || `${userInfo.given_name} ${userInfo.family_name}`
-        };
-        
-        this.setCurrentUser(user);
-      },
-      error: (error) => {
-        console.error('Error loading user info:', error);
-      }
-    });
-  }
-
   // تسجيل الخروج
   logout(): void {
-    const token = this.getToken();
-    if (token) {
-      // إرسال طلب تسجيل الخروج للخادم
-      const logoutUrl = `${this.IDENTITY_SERVER_URL}/connect/endsession?` +
-        `client_id=${this.CLIENT_ID}&` +
-        `post_logout_redirect_uri=${encodeURIComponent('http://localhost:4200/signout-callback')}` +
-        `id_token_hint=${token}`;
-      
-      window.location.href = logoutUrl;
-    } else {
-      this.clearAuthData();
-      this.router.navigate(['/auth/login']);
-    }
-  }
-
-  // معالجة callback تسجيل الخروج
-  handleSignoutCallback(): void {
     this.clearAuthData();
     this.router.navigate(['/auth/login']);
   }
@@ -174,17 +97,12 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    const body = new URLSearchParams();
-    body.set('client_id', this.CLIENT_ID);
-    body.set('grant_type', 'refresh_token');
-    body.set('refresh_token', refreshToken);
-
-    return this.http.post(`${this.IDENTITY_SERVER_URL}/connect/token`, body.toString(), {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    }).pipe(
+    return this.http.post(`${this.API_BASE_URL}/auth/refresh`, { refreshToken }).pipe(
       tap((response: any) => {
-        this.setToken(response.access_token);
-        this.setRefreshToken(response.refresh_token);
+        if (response.success && response.data) {
+          this.setToken(response.data.token);
+          this.setRefreshToken(response.data.refreshToken);
+        }
       }),
       catchError(error => {
         this.clearAuthData();
@@ -252,13 +170,14 @@ export class AuthService {
       try {
         const user = JSON.parse(userData);
         this.currentUserSubject.next(user);
-      } catch {
+      } catch (error) {
+        console.error('Error parsing user data:', error);
         this.clearAuthData();
       }
     }
   }
 
-  // مسح جميع بيانات المصادقة
+  // مسح بيانات المصادقة
   private clearAuthData(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
@@ -266,33 +185,13 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  // توليد string عشوائي
-  private generateRandomString(): string {
-    const array = new Uint8Array(32);
-    crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
-  }
-
-  // توليد code challenge
-  private async generateCodeChallenge(codeVerifier: string): Promise<string> {
-    // استخدام SHA256 hash كما هو مطلوب في PKCE
-    const encoder = new TextEncoder();
-    const data = encoder.encode(codeVerifier);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashBase64 = btoa(String.fromCharCode(...hashArray));
-    return hashBase64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-  }
-
-  // التحقق من وجود خطأ في URL
+  // التحقق من وجود خطأ
   hasError(): boolean {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.has('error');
+    return false; // يمكن تعديل هذا حسب الحاجة
   }
 
   // جلب رسالة الخطأ
   getErrorMessage(): string {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('error_description') || urlParams.get('error') || 'خطأ غير معروف';
+    return ''; // يمكن تعديل هذا حسب الحاجة
   }
 } 

@@ -63,7 +63,7 @@ export class SpecializationsService {
 
   constructor(private apiHelper: ApiHelperService) {
     // Set base URL for the API
-    this.apiHelper.setBaseUrl('http://localhost:5180/api');
+    this.apiHelper.setBaseUrl('http://localhost:5270/api');
     
     // Add authentication token if available
     const token = localStorage.getItem('auth_token');
