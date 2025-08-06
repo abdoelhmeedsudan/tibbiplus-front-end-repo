@@ -1,0 +1,68 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ 'Add New Rank' | translate }}</h4>
+  <button type="button" class="btn-close" (click)="onCancel()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="rankForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="nameAr" class="form-label">{{ 'Name in Arabic' | translate }} *</label>
+          <input 
+            type="text" 
+            id="nameAr"
+            formControlName="nameAr"
+            class="form-control" 
+            [class.is-invalid]="rankForm.get('nameAr')?.invalid && rankForm.get('nameAr')?.touched"
+            [placeholder]="'Enter name in Arabic' | translate">
+          <div *ngIf="rankForm.get('nameAr')?.invalid && rankForm.get('nameAr')?.touched" class="invalid-feedback">
+            {{ getErrorMessage('nameAr') }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="nameEn" class="form-label">{{ 'Name in English' | translate }} *</label>
+          <input 
+            type="text" 
+            id="nameEn"
+            formControlName="nameEn"
+            class="form-control" 
+            [class.is-invalid]="rankForm.get('nameEn')?.invalid && rankForm.get('nameEn')?.touched"
+            [placeholder]="'Enter name in English' | translate">
+          <div *ngIf="rankForm.get('nameEn')?.invalid && rankForm.get('nameEn')?.touched" class="invalid-feedback">
+            {{ getErrorMessage('nameEn') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="jobTitleId" class="form-label">{{ 'Job Title' | translate }} *</label>
+      <select 
+        id="jobTitleId"
+        formControlName="jobTitleId"
+        class="form-select" 
+        [class.is-invalid]="rankForm.get('jobTitleId')?.invalid && rankForm.get('jobTitleId')?.touched">
+        <option value="">{{ 'Select Job Title' | translate }}</option>
+        <option *ngFor="let jobTitle of jobTitles" [value]="jobTitle.id">
+          {{ jobTitle.nameAr }} - {{ jobTitle.nameEn }}
+        </option>
+      </select>
+      <div *ngIf="rankForm.get('jobTitleId')?.invalid && rankForm.get('jobTitleId')?.touched" class="invalid-feedback">
+        {{ getErrorMessage('jobTitleId') }}
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    {{ 'Cancel' | translate }}
+  </button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="rankForm.invalid">
+    {{ 'Save' | translate }}
+  </button>
+</div> 

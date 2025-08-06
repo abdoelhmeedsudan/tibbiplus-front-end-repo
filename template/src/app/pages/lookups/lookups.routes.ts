@@ -5,6 +5,8 @@ import { JobTitlesComponent } from './job-titles/job-titles.component';
 import { NationalitiesComponent } from './nationalities/nationalities.component';
 import { SpecializationsComponent } from './specializations/specializations.component';
 import { SubSpecializationsComponent } from './sub-specializations/sub-specializations.component';
+import { RanksComponent } from './ranks/ranks.component';
+import { MedicalCouncilComponent } from './medical-council/medical-council.component';
 
 export const lookups: Routes = [
     {
@@ -53,6 +55,22 @@ export const lookups: Routes = [
         data: {
             title: 'التخصصات الفرعية',
             breadcrumb: 'التخصصات الفرعية'
+        }
+    },
+    {
+        path: 'ranks',
+        component: RanksComponent,
+        data: {
+            title: 'الرتب',
+            breadcrumb: 'الرتب'
+        }
+    },
+    {
+        path: 'medical-council',
+        component: MedicalCouncilComponent,
+        data: {
+            title: 'المجالس الطبية',
+            breadcrumb: 'المجالس الطبية'
         }
     }
 ]; 

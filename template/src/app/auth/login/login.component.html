@@ -8,34 +8,89 @@
                   <img class="img-fluid for-light" src="assets/images/logo/logo.png" alt="logo">
                   <img class="img-fluid for-dark" src="assets/images/logo/logo_dark.png" alt="logo">
                 </a>
-          </div>
+            </div>
             <div class="login-main"> 
-              <div class="text-center">
-                <h4>تسجيل الدخول إلى النظام</h4>
-                <p>سيتم توجيهك إلى صفحة تسجيل الدخول الآمنة</p>
-                
-                <div class="mt-4">
-                  <button class="btn btn-primary btn-lg px-5" (click)="login()">
-                    <i class="fas fa-sign-in-alt me-2"></i>
-                    تسجيل الدخول
+              <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <div class="text-center mb-4">
+                  <h4>تسجيل الدخول إلى النظام</h4>
+                  <p>أدخل بيانات تسجيل الدخول الخاصة بك</p>
+                </div>
+
+                <!-- Error Message -->
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                  <i class="feather icon-alert-circle me-2"></i>
+                  {{ errorMessage }}
+                  <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+                </div>
+
+                <!-- Username Field -->
+                <div class="form-group mb-3">
+                  <label for="userName" class="form-label">اسم المستخدم</label>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="feather icon-user"></i>
+                    </span>
+                    <input 
+                      type="text" 
+                      id="userName"
+                      formControlName="userName"
+                      class="form-control" 
+                      placeholder="أدخل اسم المستخدم"
+                      [class.is-invalid]="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched">
+                  </div>
+                  <div *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched" class="invalid-feedback">
+                    اسم المستخدم مطلوب
+                  </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group mb-4">
+                  <label for="password" class="form-label">كلمة المرور</label>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="feather icon-lock"></i>
+                    </span>
+                    <input 
+                      type="password" 
+                      id="password"
+                      formControlName="password"
+                      class="form-control" 
+                      placeholder="أدخل كلمة المرور"
+                      [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                  </div>
+                  <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="invalid-feedback">
+                    كلمة المرور مطلوبة
+                  </div>
+                </div>
+
+                <!-- Login Button -->
+                <div class="d-grid">
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary btn-lg"
+                    [disabled]="loginForm.invalid || loading">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                    <i *ngIf="!loading" class="fas fa-sign-in-alt me-2"></i>
+                    {{ loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول' }}
                   </button>
                 </div>
 
+                <!-- Default Credentials Info -->
                 <div class="mt-4">
-                  <p class="text-muted">
+                  <h6 class="text-muted">بيانات تسجيل الدخول الافتراضية:</h6>
+                  <div class="alert alert-info">
+                    <strong>اسم المستخدم:</strong> Admin<br>
+                    <strong>كلمة المرور:</strong> Admin&#64;0489
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <p class="text-muted text-center">
                     <i class="fas fa-shield-alt me-2"></i>
                     يتم تسجيل الدخول عبر نظام آمن ومشفر
                   </p>
                 </div>
-
-                <div class="mt-4">
-                  <h6 class="text-muted">بيانات تسجيل الدخول الافتراضية:</h6>
-                  <div class="alert alert-info">
-                    <strong>اسم المستخدم:</strong> admin<br>
-                    <strong>كلمة المرور:</strong> Admin&#64;0489
-                  </div>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>

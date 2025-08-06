@@ -3,18 +3,18 @@ import { CommonModule } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JobTitlesService, JobTitle, JobTitlesApiResponse } from '../../../shared/services/job-titles.service';
-import { AddJobTitleModalComponent } from './add-job-title-modal.component';
-import { EditJobTitleModalComponent } from './edit-job-title-modal.component';
+import { RanksService, Rank, RanksApiResponse } from '../../../shared/services/ranks.service';
+import { AddRankModalComponent } from './add-rank-modal.component';
+import { EditRankModalComponent } from './edit-rank-modal.component';
 
 @Component({
-  selector: 'app-job-titles',
-  templateUrl: './job-titles.component.html',
+  selector: 'app-ranks',
+  templateUrl: './ranks.component.html',
   standalone: true,
   imports: [CommonModule, TranslateModule, ReactiveFormsModule]
 })
-export class JobTitlesComponent implements OnInit {
-  jobTitles: JobTitle[] = [];
+export class RanksComponent implements OnInit {
+  ranks: Rank[] = [];
   loading = false;
   deleting = false;
   currentPage = 1;
@@ -27,14 +27,14 @@ export class JobTitlesComponent implements OnInit {
 
   constructor(
     private translate: TranslateService, 
-    private jobTitlesService: JobTitlesService, 
+    private ranksService: RanksService, 
     private modalService: NgbModal, 
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.initSearchForm();
-    this.loadJobTitles();
+    this.loadRanks();
   }
 
   initSearchForm(): void {
@@ -43,7 +43,7 @@ export class JobTitlesComponent implements OnInit {
     });
   }
 
-  loadJobTitles(): void {
+  loadRanks(): void {
     this.loading = true;
     this.errorMessage = '';
     
@@ -55,39 +55,39 @@ export class JobTitlesComponent implements OnInit {
       SearchTerm: searchTerm
     };
 
-    this.jobTitlesService.getJobTitles(params).subscribe({
+    this.ranksService.getRanks(params).subscribe({
       next: (response: any) => {
-        console.log('Job Titles API response:', response);
+        console.log('Ranks API response:', response);
         
         // Handle different response formats
         if (response.succeeded) {
           const data = response.data || response;
           if (data.items) {
             // Paginated response
-            this.jobTitles = data.items;
+            this.ranks = data.items;
             this.currentPage = data.currentPage || 1;
             this.totalCount = data.totalCount || 0;
             this.hasPrevious = data.hasPrevious || false;
             this.hasNext = data.hasNext || false;
           } else if (Array.isArray(data)) {
             // Array response
-            this.jobTitles = data;
+            this.ranks = data;
             this.currentPage = 1;
             this.totalCount = data.length;
             this.hasPrevious = false;
             this.hasNext = false;
           } else {
-            this.jobTitles = [];
+            this.ranks = [];
             this.errorMessage = 'Invalid response format';
           }
-          console.log('Job Titles loaded:', this.jobTitles);
+          console.log('Ranks loaded:', this.ranks);
         } else {
-          this.errorMessage = response.message || 'Failed to load job titles';
+          this.errorMessage = response.message || 'Failed to load ranks';
         }
       },
       error: (error) => {
-        console.error('Error loading job titles:', error);
-        this.errorMessage = 'An error occurred while loading job titles';
+        console.error('Error loading ranks:', error);
+        this.errorMessage = 'An error occurred while loading ranks';
       },
       complete: () => {
         this.loading = false;
@@ -96,7 +96,7 @@ export class JobTitlesComponent implements OnInit {
   }
 
   addNew(): void {
-    const modalRef = this.modalService.open(AddJobTitleModalComponent, {
+    const modalRef = this.modalService.open(AddRankModalComponent, {
       centered: true,
       size: 'lg',
       backdrop: 'static',
@@ -105,18 +105,18 @@ export class JobTitlesComponent implements OnInit {
 
     modalRef.result.then((result) => {
       if (result) {
-        this.jobTitlesService.createJobTitle(result).subscribe({
+        this.ranksService.createRank(result).subscribe({
           next: (response: any) => {
             if ( response.succeeded) {
-              this.loadJobTitles();
+              this.loadRanks();
               // You could add a success toast here
             } else {
-              this.errorMessage = response.message || 'Failed to create job title';
+              this.errorMessage = response.message || 'Failed to create rank';
             }
           },
           error: (error) => {
-            console.error('Error creating job title:', error);
-            this.errorMessage = 'An error occurred while creating the job title';
+            console.error('Error creating rank:', error);
+            this.errorMessage = 'An error occurred while creating the rank';
           }
         });
       }
@@ -125,31 +125,31 @@ export class JobTitlesComponent implements OnInit {
     });
   }
 
-  editJobTitle(jobTitle: JobTitle): void {
-    const modalRef = this.modalService.open(EditJobTitleModalComponent, {
+  editRank(rank: Rank): void {
+    const modalRef = this.modalService.open(EditRankModalComponent, {
       centered: true,
       size: 'lg',
       backdrop: 'static',
       keyboard: false
     });
 
-    // Pass the job title data to the modal
-    modalRef.componentInstance.jobTitle = { ...jobTitle };
+    // Pass the rank data to the modal
+    modalRef.componentInstance.rank = { ...rank };
 
     modalRef.result.then((result) => {
       if (result) {
-        this.jobTitlesService.updateJobTitle(jobTitle.id, result).subscribe({
+        this.ranksService.updateRank(rank.id, result).subscribe({
           next: (response: any) => {
             if (response.succeeded) {
-              this.loadJobTitles();
+              this.loadRanks();
               // You could add a success toast here
             } else {
-              this.errorMessage = response.message || 'Failed to update job title';
+              this.errorMessage = response.message || 'Failed to update rank';
             }
           },
           error: (error) => {
-            console.error('Error updating job title:', error);
-            this.errorMessage = 'An error occurred while updating the job title';
+            console.error('Error updating rank:', error);
+            this.errorMessage = 'An error occurred while updating the rank';
           }
         });
       }
@@ -158,26 +158,26 @@ export class JobTitlesComponent implements OnInit {
     });
   }
 
-  deleteJobTitle(jobTitle: JobTitle): void {
+  deleteRank(rank: Rank): void {
     const confirmMessage = this.translate.instant('Are you sure you want to delete') + 
-                          ' "' + jobTitle.nameEn + '"?';
+                          ' "' + rank.nameEn + '"?';
     
     if (confirm(confirmMessage)) {
       this.deleting = true;
       this.errorMessage = '';
       
-      this.jobTitlesService.deleteJobTitle(jobTitle.id).subscribe({
+      this.ranksService.deleteRank(rank.id).subscribe({
         next: (response: any) => {
           if (response.succeeded) {
-            this.loadJobTitles();
+            this.loadRanks();
             // You could add a success toast here
           } else {
-            this.errorMessage = response.message || 'Failed to delete job title';
+            this.errorMessage = response.message || 'Failed to delete rank';
           }
         },
         error: (error) => {
-          console.error('Error deleting job title:', error);
-          this.errorMessage = 'An error occurred while deleting the job title';
+          console.error('Error deleting rank:', error);
+          this.errorMessage = 'An error occurred while deleting the rank';
         },
         complete: () => {
           this.deleting = false;
@@ -188,10 +188,10 @@ export class JobTitlesComponent implements OnInit {
 
   onSearch(): void {
     this.currentPage = 1;
-    this.loadJobTitles();
+    this.loadRanks();
   }
 
   clearError(): void {
     this.errorMessage = '';
   }
-}
+} 

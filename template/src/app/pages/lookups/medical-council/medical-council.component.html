@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-header">
           <div class="d-flex justify-content-between align-items-center">
-            <h4 class="card-title mb-0">{{ 'Job Titles' | translate }}</h4>
+            <h4 class="card-title mb-0">{{ 'Medical Councils' | translate }}</h4>
             <button class="btn btn-primary" (click)="addNew()">
               <i class="feather icon-plus"></i>
               {{ 'Add New' | translate }}
@@ -13,33 +13,6 @@
         </div>
         
         <div class="card-body">
-          <!-- Search Form -->
-          <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="mb-4">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="searchTerm">{{ 'Search' | translate }}</label>
-                  <input 
-                    type="text" 
-                    id="searchTerm"
-                    formControlName="searchTerm"
-                    class="form-control" 
-                    [placeholder]="'Search by name...' | translate">
-                </div>
-              </div>
-              <div class="col-md-6 d-flex align-items-end">
-                <button type="submit" class="btn btn-info me-2">
-                  <i class="feather icon-search"></i>
-                  {{ 'Search' | translate }}
-                </button>
-                <button type="button" class="btn btn-secondary" (click)="searchForm.reset(); onSearch()">
-                  <i class="feather icon-refresh-cw"></i>
-                  {{ 'Clear' | translate }}
-                </button>
-              </div>
-            </div>
-          </form>
-
           <!-- Error Message -->
           <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
             <i class="feather icon-alert-circle me-2"></i>
@@ -50,7 +23,7 @@
           <!-- Loading -->
           <div *ngIf="loading" class="text-center py-4">
             <div class="spinner-border text-primary"></div>
-            <p class="mt-2">{{ 'Loading job titles...' | translate }}</p>
+            <p class="mt-2">{{ 'Loading medical councils...' | translate }}</p>
           </div>
           
           <!-- Table -->
@@ -65,20 +38,20 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let jobTitle of jobTitles; let i = index">
+                <tr *ngFor="let medicalCouncil of medicalCouncils; let i = index">
                   <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-                  <td>{{ jobTitle.nameAr }}</td>
-                  <td>{{ jobTitle.nameEn }}</td>
+                  <td>{{ medicalCouncil.nameAr }}</td>
+                  <td>{{ medicalCouncil.nameEn }}</td>
                   <td>
-                    <button class="btn btn-warning me-1" (click)="editJobTitle(jobTitle)">
+                    <button class="btn btn-warning me-1" (click)="editMedicalCouncil(medicalCouncil)">
                      <i class="far fa-edit"></i>
                     </button>
-                    <button class="btn btn-danger" (click)="deleteJobTitle(jobTitle)">
+                    <button  class="btn btn-danger"  (click)="deleteMedicalCouncil(medicalCouncil)">
                       <i class="fa fa-remove"></i>
                     </button>
                   </td>
                 </tr>
-                <tr *ngIf="jobTitles.length === 0">
+                <tr *ngIf="medicalCouncils.length === 0">
                   <td colspan="4" class="text-center py-4">
                     <i class="feather icon-inbox" style="font-size: 3rem;"></i>
                     <p class="mt-2">{{ 'No data available' | translate }}</p>
@@ -92,4 +65,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> 
